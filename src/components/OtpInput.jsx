@@ -59,14 +59,22 @@ const OtpInput = () => {
         localStorage.removeItem("email");
         localStorage.removeItem("type");
         if (type === "User") {
-          const result =await authService.createUserAccount(data);
+          const result = await authService.createUserAccount(data);
           if (result === 200) {
             navigate("/login");
+          } else if (result === 409) {
+            setMessage("User Already Exist.");
+            setIsError(true);
+            navigate("/");
           }
         } else {
-          const result =await authService.createOrgAccount(data);
+          const result = await authService.createOrgAccount(data);
           if (result === 200) {
             navigate("/orglogin");
+          } else if (result === 409) {
+            setMessage("Organizer Already Exist.");
+            setIsError(true);
+            navigate("/");
           }
         }
       }
