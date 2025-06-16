@@ -29,24 +29,26 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Template />}>
       <Route path="" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/orgSignup" element={<OrgSignUp />} />
-      <Route path="/orglogin" element={<OrgLogin />} />
-      <Route path="/dashboard" element={<Dashboard />} >
-      
-      </Route>
-      <Route path="/updateProfile" element={<UpdateProfile />} />
-      <Route path="/postcard" element={<DestForm/>}/>
-      <Route path="/postCreate" element={<DestForm/>}/>
-      <Route path="/explore" element={<Explore/>}/>
-      <Route path="/details/:id" element={<Details/>}/>
-      <Route path="/history" element={<History/>}/>
-      <Route path="/editPost/:id" element={<EditPost/>}/>
-      <Route path="/otp" element={<OtpInput/>}/>
+      <Route path="login" element={<Login />} />
+      <Route path="signup" element={<Signup />} />
+      <Route path="orgSignup" element={<OrgSignUp />} />
+      <Route path="orglogin" element={<OrgLogin />} />
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="updateProfile" element={<UpdateProfile />} />
+      <Route path="postcard" element={<DestForm />} />
+      <Route path="postCreate" element={<DestForm />} />
+      <Route path="explore" element={<Explore />} />
+      <Route path="details/:id" element={<Details />} />
+      <Route path="history" element={<History />} />
+      <Route path="editPost/:id" element={<EditPost />} />
+      <Route path="otp" element={<OtpInput />} />
     </Route>
-  )
+  ),
+  {
+    basename: '/Parivrajak',
+  }
 );
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
