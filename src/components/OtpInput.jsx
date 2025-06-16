@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import authService from "../authentication/auth";
 const OtpInput = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const data = location.state?.userData;
   const otpLength = 6;
   const inputRefs = useRef([]);
   const [resendMessage, setResendMessage] = useState("");
@@ -40,7 +42,7 @@ const OtpInput = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/verifyOtp`,
+        `${import.meta.env.VITE_API_URL}/verifyOtp`,
         null,
         {
           params: {
@@ -57,10 +59,15 @@ const OtpInput = () => {
         localStorage.removeItem("email");
         localStorage.removeItem("type");
         if (type === "User") {
-          navigate("/login")
-        }
-        else{
-            navigate("/orglogin")
+          const result =await authService.createUserAccount(data);
+          if (result === 200) {
+            navigate("/login");
+          }
+        } else {
+          const result =await authService.createOrgAccount(data);
+          if (result === 200) {
+            navigate("/orglogin");
+          }
         }
       }
     } catch (err) {
@@ -73,9 +80,13 @@ const OtpInput = () => {
     const email = localStorage.getItem("email");
 
     try {
-      const response = await axios.post(`http://localhost:8080/sendOtp`, null, {
-        params: { email: email },
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/sendOtp`,
+        null,
+        {
+          params: { email: email },
+        }
+      );
 
       if (response.status === 200) {
         setResendMessage("OTP resent successfully.");

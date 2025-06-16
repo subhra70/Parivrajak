@@ -114,7 +114,7 @@ function DestForm() {
       );
 
       const response = await axios.post(
-        "http://localhost:8080/product",
+        `${import.meta.env.VITE_API_URL}/product`,
         formData,
         {
           headers: {

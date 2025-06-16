@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdModeEdit } from "react-icons/md";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import axios from "axios";
-function PostHistoryCard({ product = {} }) {
+function PostHistoryCard({ product = {},onDelete }) {
   const navigate = useNavigate();
   const { id, title, place, price, orgid } = product;
   const [imageUrl, setImageUrl] = useState("");
@@ -20,20 +20,46 @@ function PostHistoryCard({ product = {} }) {
           return navigate("/orglogin");
         }
 
-        const image = await axios.get(`http://localhost:8080/bannerImage/${id}`, {
-          responseType: "blob",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const image = await axios.get(
+          `${import.meta.env.VITE_API_URL}/bannerImage/${id}`,
+          {
+            responseType: "blob",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (image.status === 200) {
           setImageUrl(URL.createObjectURL(image.data));
         }
       } catch (error) {
         console.log(error);
-        
       }
     };
     fetchImage();
-  });
+  },[id,navigate]);
+
+  const deleteProduct=async()=>{
+    try {
+      const token = localStorage.getItem("jwtToken");
+        if (!token) return navigate("/orglogin");
+
+        const { exp } = jwtDecode(token);
+        if (exp * 1000 < Date.now()) {
+          authService.logoutUser();
+          return navigate("/orglogin");
+        }
+        const response=await axios.delete(`${import.meta.env.VITE_API_URL}/product/${id}`,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        })
+        if(response.status===200){
+          alert("Product deleted")
+          onDelete(id)
+        }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="w-full flex flex-col sm:flex-row items-center sm:items-start justify-between border border-gray-300 rounded-lg p-4 shadow-sm hover:shadow-md transition gap-4">
@@ -62,12 +88,14 @@ function PostHistoryCard({ product = {} }) {
 
       {/* Action Buttons */}
       <div className="flex flex-row sm:flex-col gap-4 items-center text-xl text-gray-600">
-        <button className="hover:text-red-600 transition">
-          <MdDelete />
+        <button className="hover:text-red-600 transition" onClick={deleteProduct}>
+          <MdDelete/>
         </button>
-        <button className="hover:text-blue-600 transition">
-          <MdModeEdit />
-        </button>
+        <Link to={`/editPost/${id}`}>
+          <button className="hover:text-blue-600 transition">
+            <MdModeEdit/>
+          </button>
+        </Link>
       </div>
     </div>
   );

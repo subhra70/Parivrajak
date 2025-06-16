@@ -1,55 +1,46 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import AuthService from "../authentication/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
 function Signup() {
-  const navigate=useNavigate()
-  const { register, handleSubmit} = useForm();
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
   const [error, setError] = useState(false);
-  const [errorMessage,setErrorMessage]=useState()
+  const [errorMessage, setErrorMessage] = useState();
 
   const signup = async (data) => {
     setErrorMessage("");
     try {
-      const session = await AuthService.createUserAccount(data);
-      if (session === 201) {
-        setError(false)
-        setErrorMessage("Signup Successful")
-        navigate("/login")
-        // const response = await axios.post(`http://localhost:8080/sendOtp`,null, {
-        //   params: {
-        //     email: data.email,
-        //   },
-        // });
-        // if (response.status === 200) {
-        //   localStorage.setItem("email",data.email)
-        //   localStorage.setItem("type","User")
-        //   navigate("/otp");
-        // }
-        // else{
-        //   setErrorMessage("Invalid Email Id")
-        //   const msg=await axios.delete(`http://localhost:8080/user`,
-        //     {
-        //       email:data.email
-        //     }
-        //   )
-        //   if(msg.status===200)
-        //   {
-        //     console.log("Account deleted");
-            
-        //   }
-        // }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/sendOtp`,
+        {},
+        {
+          params: {
+            email: data.email,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setError(false);
+        setErrorMessage("OTP Sent Successfully");
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("type", "User");
+        navigate("/otp", { state: { userData: data } });
+      } else {
+        setError(true);
+        setErrorMessage("Invalid Email Id");
       }
     } catch (error) {
       if (error.response) {
-        setError(true)
+        setError(true);
         if (error.response.status === 409) {
           setErrorMessage("Email Already Exists");
         } else {
-          setErrorMessage("Something went wrong. Status: " + error.response.status);
+          setErrorMessage(
+            "Something went wrong. Status: " + error.response.status
+          );
         }
       } else {
         setErrorMessage("Network or Server Error");
@@ -61,10 +52,14 @@ function Signup() {
     <div className="flex items-center justify-center pt-12 px-4">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-6">
         {!error && (
-          <div className="text-center text-green-600 font-medium">{errorMessage}</div>
+          <div className="text-center text-green-600 font-medium">
+            {errorMessage}
+          </div>
         )}
         {error && (
-          <div className="text-center text-red-600 font-medium">{errorMessage}</div>
+          <div className="text-center text-red-600 font-medium">
+            {errorMessage}
+          </div>
         )}
         <h2 className="text-3xl font-bold text-center text-orange-600">
           Welcome to Parivrajak

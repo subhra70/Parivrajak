@@ -3,7 +3,7 @@ import axios from "axios";
 export class AuthService {
   async createUserAccount({ email, password, name }) {
     const userAccount = await axios.post(
-      "http://localhost:8080/registerUser",
+      `${import.meta.env.VITE_API_URL}/registerUser`,
       {
         username: name,
         email: email,
@@ -19,7 +19,7 @@ export class AuthService {
   async userLogin({ email, password }) {
     try {
       const response = await axios.post(
-        "http://localhost:8080/loginUser",
+        `${import.meta.env.VITE_API_URL}/loginUser`,
         {
           email: email,
           password: password,
@@ -55,7 +55,7 @@ export class AuthService {
 
   async createOrgAccount({ name, orgname, phone, email, password, loc }) {
     const orgAccount = await axios.post(
-      "http://localhost:8080/registerOrganizer",
+      `${import.meta.env.VITE_API_URL}/registerOrganizer`,
       {
         username: name,
         organization: orgname,
@@ -74,7 +74,7 @@ export class AuthService {
   async orgLogin({ email, password }) {
     try {
       const response = await axios.post(
-        "http://localhost:8080/orgLogin",
+        `${import.meta.env.VITE_API_URL}/orgLogin`,
         {
           email: email,
           password: password,

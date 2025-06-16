@@ -16,7 +16,7 @@ function ExploreCard({ destination }) {
     const fetchBanner = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/bannerImage/${id}`,
+          `${import.meta.env.VITE_API_URL}/bannerImage/${id}`,
           {
             responseType: "blob",
           }
@@ -46,7 +46,7 @@ function ExploreCard({ destination }) {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/saveProduct",
+        `${import.meta.env.VITE_API_URL}/saveProduct`,
         {
           userId: -1,
           destId: id,
@@ -77,7 +77,7 @@ function ExploreCard({ destination }) {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/purchase",
+        `${import.meta.env.VITE_API_URL}/purchase`,
         {
           userId: -1,
           destId: id,
@@ -87,7 +87,7 @@ function ExploreCard({ destination }) {
         }
       );
       if (response.status === 200) {
-        alert("Package Saved");
+        alert("Package Purchased");
       }
     } catch (error) {
       console.log(error);

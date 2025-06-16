@@ -10,6 +10,7 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import HomeCard from "./card/HomeCard";
 
 function Home() {
+  
   return (
     <div className="absolute min-h-screen no-scrollbar left-0 top-0 w-full bg-black overflow-y-hidden">
       {/* Background with overlay */}

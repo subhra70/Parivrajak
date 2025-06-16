@@ -29,7 +29,7 @@ function Details() {
           return navigate("/login");
         }
 
-        const res = await axios.get(`http://localhost:8080/product/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/product/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.status !== 200) throw new Error("Fetch failed");
@@ -59,7 +59,7 @@ function Details() {
       }
       if (product.orgId !== undefined && product.orgId !== null) {
         const org = await axios.get(
-          `http://localhost:8080/organizer/${product.orgId}`,
+          `${import.meta.env.VITE_API_URL}/organizer/${product.orgId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (org.status === 200) setOrganization(org.data);
@@ -81,7 +81,7 @@ function Details() {
       }
 
       const imgRes = await axios.get(
-        `http://localhost:8080/bannerImage/${id}`,
+        `${import.meta.env.VITE_API_URL}/bannerImage/${id}`,
         {
           responseType: "blob",
           headers: { Authorization: `Bearer ${token}` },
@@ -92,7 +92,7 @@ function Details() {
       }
 
       const hotelRes = await axios.get(
-        `http://localhost:8080/hotelImages/${product.hotelId}`,
+        `${import.meta.env.VITE_API_URL}/hotelImages/${product.hotelId}`,
         { responseType: "json", headers: { Authorization: `Bearer ${token}` } }
       );
       const images = hotelRes.data.map(
@@ -117,7 +117,7 @@ function Details() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/saveProduct",
+        `${import.meta.env.VITE_API_URL}/saveProduct`,
         {
           userId: -1,
           destId: id,
@@ -148,7 +148,7 @@ function Details() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/purchase",
+        `${import.meta.env.VITE_API_URL}`,
         {
           userId: -1,
           destId: id,
@@ -158,7 +158,7 @@ function Details() {
         }
       );
       if (response.status === 200) {
-        alert("Package Saved");
+        alert("Package Purchased");
       }
     } catch (error) {
       console.log(error);

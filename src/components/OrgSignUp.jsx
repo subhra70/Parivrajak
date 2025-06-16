@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import authService from "../authentication/auth";
 import axios from "axios";
 
 function OrgSignUp() {
-  const { register, handleSubmit} = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState(false);
   const [errMob, setErrMob] = useState(false);
   const [errEmail, setErrEmail] = useState(false);
@@ -15,34 +14,24 @@ function OrgSignUp() {
   const login = async (data) => {
     setErrorMessage("");
     try {
-      const result = authService.createOrgAccount(data);
-      if (result === 201) {
-        // const response = await axios.post(`http://localhost:8080/sendOtp`,null, {
-        //   params: {
-        //     email: data.email,
-        //   },
-        // });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/sendOtp`,
+        null,
+        {
+          params: {
+            email: data.email,
+          },
+        }
+      );
+      if (response.status === 200) {
         setError(false);
-        setErrorMessage("Signup Successfull")
-        navigate("/orglogin")
-        // if (response.status === 200) {
-        //   localStorage.setItem("email",data.email)
-        //   localStorage.setItem("type","Organizer")
-        //   navigate("/otp");
-        // }
-        // else{
-        //   setErrorMessage("Invalid Email Id")
-        //   const msg=await axios.delete(`http://localhost:8080/organizer`,
-        //     {
-        //       email:data.email
-        //     }
-        //   )
-        //   if(msg.status===200)
-        //   {
-        //     console.log("Account deleted");
-            
-        //   }
-        // }
+        setErrorMessage("OTP Sent Successfully");
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("type", "Organizer");
+        navigate("/otp", { state: { userData: data } });
+      } else {
+        setError(true);
+        setErrorMessage("Invalid Email Id");
       }
     } catch (error) {
       if (error.response) {

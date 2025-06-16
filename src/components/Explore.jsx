@@ -60,7 +60,7 @@ function Explore() {
         break;
       case "11000 and more":
         setStartPrice(11000);
-        setEndPrice(100000);
+        setEndPrice(100000000);
         break;
       default:
         setStartPrice(0);
@@ -91,7 +91,7 @@ function Explore() {
         break;
       case "13 and more":
         setStartDay(13);
-        setEndDay(20);
+        setEndDay(200);
         break;
       default:
         setStartDay(0);
@@ -103,12 +103,12 @@ function Explore() {
   useEffect(() => {
     const fetchDestHistory = async () => {
       try {
-        const {data,status}=await axios.get("http://localhost:8080/productsFilter", {
+        const {data,status}=await axios.get(`${import.meta.env.VITE_API_URL}/productsFilter`, {
           params: {
-            startPrice: 0,
-            endPrice: 0,
-            startDay: 0,
-            endDay: 0,
+            startPrice: startPrice,
+            endPrice: endPrice,
+            startDay: startDay,
+            endDay: endDay,
           },
         });
 

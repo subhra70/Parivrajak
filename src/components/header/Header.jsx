@@ -4,6 +4,7 @@ import { BsCart3 } from "react-icons/bs";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../authentication/auth";
+import { useSelector } from "react-redux";
 
 function Header() {
   const [username, setUsername] = useState(null);

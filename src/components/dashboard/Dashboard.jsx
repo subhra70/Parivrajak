@@ -19,7 +19,7 @@ function Dashboard() {
   const [email, setEmail] = useState("");
   const [loc, setLoc] = useState("");
   const [postHistory, setPostHistory] = useState([]);
-  let idx=0;
+  let idx = 0;
   useEffect(() => {
     const init = async () => {
       const token = localStorage.getItem("jwtToken");
@@ -34,11 +34,14 @@ function Dashboard() {
           navigate("/orglogin");
         }
 
-        const { data,status } = await axios.get("http://localhost:8080/organizer", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const { data, status } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/organizer`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (status === 200 && data) {
           setName(data.username);
@@ -49,7 +52,7 @@ function Dashboard() {
         }
       } catch (err) {
         console.log(err);
-        
+
         await authService.logoutUser();
         navigate("/orglogin");
       }
@@ -70,7 +73,7 @@ function Dashboard() {
       try {
         const token = localStorage.getItem("jwtToken");
         const { data, status } = await axios.get(
-          "http://localhost:8080/orgproducts",
+          `${import.meta.env.VITE_API_URL}/orgproducts`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -86,8 +89,10 @@ function Dashboard() {
     };
 
     fetchPosts();
-  }, []);
-
+  }, [navigate]);
+  const handleDelete=(id)=>{
+    setPostHistory((prevpost)=>prevpost.filter((p)=>p.id!==id))
+  }
 
   const renderContent = () => {
     switch (selectedTab) {
@@ -222,26 +227,28 @@ function Dashboard() {
                 Post History
               </h1>
               <Link to={"/postCreate"}>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                Create Post
-              </button>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                  Create Post
+                </button>
               </Link>
             </div>
             {postHistory.length === 0 ? (
-      <div className="flex justify-center items-center h-48">
-        <p className="text-gray-500 text-lg font-medium">Nothing Posted Yet</p>
-      </div>
-    ) : (
-      <div className="overflow-x-auto scroll-smooth no-scrollbar px-1">
-        <div className="flex flex-row md:flex-col gap-4 py-2 w-max md:w-full">
-          {postHistory.map((post, i) => (
-            <div key={i} className="w-full sm:w-[260px] md:w-full">
-              <PostHistoryCard product={post}/>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
+              <div className="flex justify-center items-center h-48">
+                <p className="text-gray-500 text-lg font-medium">
+                  Nothing Posted Yet
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto scroll-smooth no-scrollbar px-1">
+                <div className="flex flex-row md:flex-col gap-4 py-2 w-max md:w-full">
+                  {postHistory.map((post, i) => (
+                    <div key={i} className="w-full sm:w-[260px] md:w-full">
+                      <PostHistoryCard key={post.id} product={post} onDelete={handleDelete}/>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
       case "sold":

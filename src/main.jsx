@@ -23,6 +23,7 @@ import Explore from "./components/Explore.jsx";
 import Details from "./components/card/Details.jsx";
 import History from "./components/card/History.jsx";
 import OtpInput from "./components/OtpInput.jsx";
+import EditPost from "./components/updateForms/EditPost.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
       <Route path="/explore" element={<Explore/>}/>
       <Route path="/details/:id" element={<Details/>}/>
       <Route path="/history" element={<History/>}/>
+      <Route path="/editPost/:id" element={<EditPost/>}/>
       <Route path="/otp" element={<OtpInput/>}/>
     </Route>
   )
