@@ -1,10 +1,10 @@
 import React from "react";
 import "./style.css";
-import background from "../images/home_bg3.jpg";
-import kedarnath from "../images/kedarnath.jpg";
-import meghalaya from "../images/meghalaya.jpg";
-import sundarban from "../images/sundarban.jpg";
-import organizer from "../images/organizer.jpg";
+import background from "../assets/home_bg3.jpg";
+import kedarnath from "../assets/kedarnath.jpg";
+import meghalaya from "../assets/meghalaya.jpg";
+import sundarban from "../assets/sundarban.jpg";
+import organizer from "../assets/organizer.jpg";
 import { Link } from "react-router-dom";
 import { FaArrowCircleRight } from "react-icons/fa";
 import HomeCard from "./card/HomeCard";
