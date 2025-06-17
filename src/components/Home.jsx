@@ -1,5 +1,5 @@
 import React from "react";
-import "./style.css";
+
 import background from "../assets/home_bg3.jpg";
 import kedarnath from "../assets/kedarnath.jpg";
 import meghalaya from "../assets/meghalaya.jpg";

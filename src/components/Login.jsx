@@ -1,5 +1,4 @@
 import React, {useState } from "react";
-import "./style.css"
 import { FcGoogle } from "react-icons/fc";
 import AuthService from "../authentication/auth";
 import { Link, useNavigate } from "react-router-dom";

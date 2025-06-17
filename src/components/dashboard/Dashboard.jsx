@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md"; //  ← icons for the toggle
 import PostHistoryCard from "../card/PostHistoryCard";
-import "../style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";

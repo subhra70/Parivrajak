@@ -3,7 +3,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import ExploreCard from "./card/ExploreCard";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./style.css";
+;
 
 function Explore() {
   const navigate = useNavigate();
