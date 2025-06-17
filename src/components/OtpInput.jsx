@@ -60,7 +60,7 @@ const OtpInput = () => {
         localStorage.removeItem("type");
         if (type === "User") {
           const result = await authService.createUserAccount(data);
-          if (result === 200) {
+          if (result === 201) {
             navigate("/login");
           } else if (result === 409) {
             setMessage("User Already Exist.");
@@ -69,7 +69,7 @@ const OtpInput = () => {
           }
         } else {
           const result = await authService.createOrgAccount(data);
-          if (result === 200) {
+          if (result === 201) {
             navigate("/orglogin");
           } else if (result === 409) {
             setMessage("Organizer Already Exist.");
