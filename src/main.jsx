@@ -43,10 +43,7 @@ const router = createBrowserRouter(
       <Route path="editPost/:id" element={<EditPost />} />
       <Route path="otp" element={<OtpInput />} />
     </Route>
-  ),
-  {
-    basename: '/Parivrajak',
-  }
+  )
 );
 
 createRoot(document.getElementById("root")).render(
