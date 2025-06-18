@@ -13,13 +13,16 @@ function OrgLogin() {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [disableSubmit,setDisableSubmit]=useState(false)
 
   const login = async (data) => {
     setError("");
+    setDisableSubmit(true)
     try {
       const status = await AuthService.orgLogin(data);
       if (status==200) {
         setMessage("Login Successfull")
+        setDisableSubmit(false)
         const userData = localStorage.getItem("username");
         if (userData!="") {
           dispatch(authLogin(userData));
@@ -27,10 +30,13 @@ function OrgLogin() {
         }
       }
       else{
+        setDisableSubmit(false)
         setError(true)
         setMessage("Invalid Request");
       }
     } catch (error) {
+      setDisableSubmit(false)
+      console.log(error);
       setError(true);
       setMessage("Invalid Request");
     }
@@ -102,8 +108,9 @@ function OrgLogin() {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition"
+            disabled={disableSubmit}
           >
-            Sign In
+            {disableSubmit?"Signing In":"Sign In"}
           </button>
         </form>
 

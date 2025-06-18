@@ -9,41 +9,81 @@ function Signup() {
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  let isNameErr = true;
+  let isEmailErr = true;
+  let isPassErr = true;
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passError, setPassError] = useState("");
+  const [disableSubmit,setDisableSubmit]=useState(false)
 
   const signup = async (data) => {
     setErrorMessage("");
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/sendOtp`,
-        {},
-        {
-          params: {
-            email: data.email,
-          },
-        }
+    if (data.name === "") {
+      setNameError("Empty or Invalid Name");
+    } else {
+      isNameErr = false;
+      setNameError("");
+    }
+    if (data.email === "") {
+      setEmailError("Empty email");
+    } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(data.email)) {
+      setEmailError("Invalid Email Format");
+    } else {
+      isEmailErr = false;
+      setEmailError("");
+    }
+    if (data.password === "") {
+      setPassError("Empty Password");
+    } else if (
+      !/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(data.password)
+    ) {
+      setPassError(
+        "Password must have atleast one capital letter,one special character,one digit and atleast of length 6"
       );
-      if (response.status === 200) {
-        setError(false);
-        setErrorMessage("OTP Sent Successfully");
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("type", "User");
-        navigate("/otp", { state: { userData: data } });
-      } else {
-        setError(true);
-        setErrorMessage("Invalid Email Id");
-      }
-    } catch (error) {
-      if (error.response) {
-        setError(true);
-        if (error.response.status === 409) {
-          setErrorMessage("Email Already Exists");
+    } else {
+      isPassErr = false;
+      setPassError("");
+    }
+    if (!isNameErr && !isEmailErr && !isPassErr) {
+      setDisableSubmit(true)
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/sendOtp`,
+          {},
+          {
+            params: {
+              email: data.email,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setError(false);
+          setDisableSubmit(false)
+          setErrorMessage("OTP Sent Successfully");
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("type", "User");
+          navigate("/otp", { state: { userData: data } });
         } else {
-          setErrorMessage(
-            "Something went wrong. Status: " + error.response.status
-          );
+          setError(true);
+          setDisableSubmit(false)
+          setErrorMessage("Invalid Email Id");
         }
-      } else {
-        setErrorMessage("Network or Server Error");
+      } catch (error) {
+        if (error.response) {
+          setError(true);
+          if (error.response.status === 409) {
+            setErrorMessage("Email Already Exists");
+          } else {
+            setErrorMessage(
+              "Something went wrong. Status: " + error.response.status
+            );
+          }
+          setDisableSubmit(false)
+        } else {
+          setDisableSubmit(false)
+          setErrorMessage("Network or Server Error");
+        }
       }
     }
   };
@@ -79,8 +119,11 @@ function Signup() {
               id="name"
               placeholder="Enter your full name"
               className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-              {...register("name", { required: true })}
+              {...register("name")}
             />
+            {isNameErr && (
+              <div className="text-sm text-red-600 text-left">{nameError}</div>
+            )}
           </div>
 
           {/* Organization */}
@@ -113,15 +156,11 @@ function Signup() {
               id="email"
               placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-              {...register("email", {
-                required: true,
-                validate: {
-                  matchPattern: (value) =>
-                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                    "Invalid email format",
-                },
-              })}
+              {...register("email")}
             />
+            {isEmailErr && (
+              <div className="text-sm text-red-600 text-left">{emailError}</div>
+            )}
           </div>
 
           {/* Password */}
@@ -137,25 +176,20 @@ function Signup() {
               id="password"
               placeholder="Enter your password"
               className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-              {...register("password", {
-                required: true,
-                validate: {
-                  matchPattern: (value) =>
-                    /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(
-                      value
-                    ) ||
-                    "Password must contain at least 1 digit, 1 special character, 1 uppercase letter, and be at least 6 characters long",
-                },
-              })}
+              {...register("password")}
             />
+            {isPassErr && (
+              <div className="text-sm text-red-600 text-left">{passError}</div>
+            )}
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition"
+            disabled={disableSubmit}
           >
-            Sign Up
+            {disableSubmit?"Signing Up":"Sign Up"}
           </button>
         </form>
 

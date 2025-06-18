@@ -6,45 +6,110 @@ import axios from "axios";
 function OrgSignUp() {
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState(false);
-  const [errMob, setErrMob] = useState(false);
-  const [errEmail, setErrEmail] = useState(false);
-  const [errPass, setErrPass] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  const [errNameMsg, setErrNameMsg] = useState("");
+  const [errOrgMsg, setErrOrgMsg] = useState("");
+  const [errMobMsg, setErrMobMsg] = useState("");
+  const [errEmailMsg, setErrEmailMsg] = useState("");
+  const [errPassMsg, setErrPassMsg] = useState("");
+  const [errLocMsg, setErrLocMsg] = useState("");
+  const [disableSubmit,setDisableSubmit]=useState(false)
   const navigate = useNavigate();
+  let errName = true;
+  let errOrg = true;
+  let errMob = true;
+  let errEmail = true;
+  let errPass = true;
+  let errLoc = true;
   const login = async (data) => {
     setErrorMessage("");
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/sendOtp`,
-        null,
-        {
-          params: {
-            email: data.email,
-          },
-        }
+    if (data.name === "") {
+      setErrNameMsg("Empty name field");
+    } else {
+      errName = false;
+      setErrNameMsg("");
+    }
+    if (data.orgname === "") {
+      setErrOrgMsg("Empty Organization Name");
+    } else {
+      errOrg = false;
+      setErrOrgMsg("");
+    }
+    if (!/^(?:\+91[-\s]?|0)?[6-9]\d{9}$/.test(data.phone)) {
+      setErrMobMsg("Invalid Mobile Number");
+    } else {
+      errMob = false;
+      setErrMobMsg("");
+    }
+    if (data.email === "") {
+      setErrEmailMsg("Email Id Required");
+    } else if (
+      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
+    ) {
+      setErrEmailMsg("Invalid Email Format");
+    } else {
+      errEmail = false;
+      setErrEmailMsg("");
+    }
+    if (data.password === "") {
+      setErrPassMsg("Empty Password Field");
+    } else if (
+      !/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(data.password)
+    ) {
+      setErrPassMsg(
+        "Password must have atleast one capital letter,one special character,one digit and atleast of length 6"
       );
-      if (response.status === 200) {
-        setError(false);
-        setErrorMessage("OTP Sent Successfully");
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("type", "Organizer");
-        navigate("/otp", { state: { userData: data } });
-      } else {
-        setError(true);
-        setErrorMessage("Invalid Email Id");
-      }
-    } catch (error) {
-      if (error.response) {
-        setError(true);
-        if (error.response.status === 409) {
-          setErrorMessage("Email Already Exists");
+    } else {
+      errPass = false;
+      setErrPassMsg("");
+    }
+    if (data.loc === "") {
+      setErrLocMsg("Location is required");
+    } else {
+      errLoc = false;
+      setErrLocMsg("");
+    }
+    if (!errName && !errOrg && !errMob && !errEmail && !errPass && !errLoc) {
+      setDisableSubmit(true)
+      reset()
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/sendOtp`,
+          null,
+          {
+            params: {
+              email: data.email,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setDisableSubmit(false)
+          setError(false);
+          reset();
+          setErrorMessage("OTP Sent Successfully");
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("type", "Organizer");
+          navigate("/otp", { state: { userData: data } });
         } else {
-          setErrorMessage(
-            "Something went wrong. Status: " + error.response.status
-          );
+          setDisableSubmit(false)
+          setError(true);
+          setErrorMessage("Invalid Email Id");
         }
-      } else {
-        setErrorMessage("Network or Server Error");
+      } catch (error) {
+        if (error.response) {
+          setDisableSubmit(false)
+          setError(true);
+          if (error.response.status === 409) {
+            setErrorMessage("Email Already Exists");
+          } else {
+            setErrorMessage(
+              "Something went wrong. Status: " + error.response.status
+            );
+          }
+        } else {
+          setDisableSubmit(false)
+          setErrorMessage("Network or Server Error");
+        }
       }
     }
   };
@@ -79,10 +144,11 @@ function OrgSignUp() {
               name="name"
               placeholder="Enter Full Name"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("name", {
-                required: true,
-              })}
+              {...register("name")}
             />
+            {errName && (
+              <div className="text-sm text-red-600 text-left">{errNameMsg}</div>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -95,10 +161,11 @@ function OrgSignUp() {
               name="orgname"
               placeholder="Enter Your Organization Name"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("orgname", {
-                required: true,
-              })}
+              {...register("orgname")}
             />
+            {errOrg && (
+              <div className="text-sm text-red-600 text-left">{errOrgMsg}</div>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -111,21 +178,10 @@ function OrgSignUp() {
               name="phone"
               placeholder="Enter Your Mobile Number"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("phone", {
-                required: true,
-                matchPattern: (value) => {
-                  if (/^(?:\+91[-\s]?|0)?[6-9]\d{9}$/.test(value)) {
-                    setErrMob(false);
-                  } else {
-                    setErrMob(true);
-                  }
-                },
-              })}
+              {...register("phone")}
             />
             {errMob && (
-              <span className="text-sm text-red-500">
-                Invalid Mobile Number
-              </span>
+              <span className="text-sm text-red-600 text-left">{errMobMsg}</span>
             )}
           </div>
 
@@ -139,23 +195,10 @@ function OrgSignUp() {
               name="email"
               placeholder="Enter Your Email Id"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("email", {
-                required: true,
-                validate: {
-                  matchPattern: (value) => {
-                    if (
-                      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)
-                    ) {
-                      setErrEmail(false);
-                    } else {
-                      setErrEmail(true);
-                    }
-                  },
-                },
-              })}
+              {...register("email")}
             />
             {errEmail && (
-              <span className="text-sm text-red-500">Invalid Email Id</span>
+              <span className="text-sm text-red-600 text-left">{errEmailMsg}</span>
             )}
           </div>
 
@@ -169,26 +212,10 @@ function OrgSignUp() {
               name="password"
               placeholder="Enter Password"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("password", {
-                required: true,
-                validate: {
-                  matchPattern: (value) => {
-                    if (
-                      /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(value)
-                    ) {
-                      setErrPass(false);
-                    } else {
-                      setErrPass(true);
-                    }
-                  },
-                },
-              })}
+              {...register("password")}
             />
             {errPass && (
-              <span className="text-sm text-red-500">
-                Password must contain at least 1 digit, 1 special character, 1
-                uppercase letter, and be at least 6 characters long
-              </span>
+              <span className="text-sm text-red-600 text-left">{errPassMsg}</span>
             )}
           </div>
 
@@ -202,18 +229,22 @@ function OrgSignUp() {
               name="loc"
               placeholder="Enter Your Location"
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              {...register("loc", {
-                required: true,
-              })}
+              {...register("loc")}
             />
+            {errLoc && (
+              <div className="text-sm text-red-600 text-left">
+                {errLocMsg}
+              </div>
+            )}
           </div>
         </div>
 
         <button
           type="submit"
           className="w-full bg-orange-500 text-white font-semibold py-3 rounded-md hover:bg-orange-600 transition"
+          disabled={disableSubmit}
         >
-          Sign Up
+          {disableSubmit?"Signing Up":"Sign Up"}
         </button>
 
         <p className="text-center text-sm text-gray-600">
