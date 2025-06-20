@@ -29,9 +29,12 @@ function Details() {
           return navigate("/login");
         }
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/product/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/product/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (res.status !== 200) throw new Error("Fetch failed");
 
         const p = res.data;
@@ -103,7 +106,8 @@ function Details() {
       console.error(err);
     }
   };
-  const savePackage = async () => {
+  const savePackage = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -115,7 +119,6 @@ function Details() {
         authService.logoutUser();
         return navigate("/login");
       }
-
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/saveProduct`,
         {
@@ -133,8 +136,16 @@ function Details() {
       console.log(error);
     }
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+    const year = today.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-  const purchase = async () => {
+  const purchase = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -147,14 +158,21 @@ function Details() {
         return navigate("/login");
       }
 
+      const date = getCurrentDate();
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}`,
+        `${import.meta.env.VITE_API_URL}/purchase`,
         {
-          userId: -1,
+          orgId: organization.id,
+          place: product.place,
+          amount: totalPrice,
+          date: date,
           destId: id,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.status === 200) {
@@ -215,7 +233,7 @@ function Details() {
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-700">Price:</span>
           <span className="px-3 py-1 rounded-full bg-orange-500 text-white font-semibold">
-            ₹{totalPrice}
+            ₹{totalPrice.toFixed(2)}
           </span>
         </div>
 
@@ -270,6 +288,18 @@ function Details() {
           />
         </label>
       </div>
+      <div className="flex gap-3 text-sm px-4">
+        <h1 className="text-lg font-bold">Description:</h1>
+        <span className="text-left text-md">
+          All the information provided above is accurate. You can choose a
+          package based on the number of members and the number of days you wish
+          to stay. The tour plans vary depending on the duration of your stay.
+          To get a detailed day-wise itinerary for the entire tour, feel free to
+          contact us at <b>{organization && organization.phone}</b>. We will provide you with all the
+          necessary information, including how the tour will proceed from the
+          first day to the last.
+        </span>
+      </div>
 
       {/* Hotel gallery */}
       {hotelImages.length > 0 && (
@@ -309,8 +339,9 @@ function Details() {
       )}
 
       {/* CTA Button */}
-      <div className="flex flex-col md:flex-row md:gap-2 justify-center">
+      <div className="flex flex-col md:flex-row gap-2 justify-center">
         <button
+          type="button"
           onClick={savePackage}
           className="rounded-xl px-4 bg-green-600 py-3 font-semibold text-white hiver:bg-green-700 transition-shadow shadow-md hover:shadow-lg"
         >
@@ -318,14 +349,14 @@ function Details() {
         </button>
         <button
           onClick={() => {
-            navigate(-1);
+            navigate("/explore");
           }}
           className="rounded-xl px-4 bg-orange-600 py-3 font-semibold text-white hiver:bg-orange-700 transition-shadow shadow-md hover:shadow-lg"
         >
           Back
         </button>
         <button
-          type="submit"
+          type="button"
           onClick={purchase}
           className="rounded-xl px-4 bg-blue-600 py-3 font-semibold text-white text-lg hover:bg-blue-700 transition-shadow shadow-md hover:shadow-lg"
         >

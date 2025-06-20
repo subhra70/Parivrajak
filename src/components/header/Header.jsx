@@ -2,14 +2,12 @@ import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { BsCart3 } from "react-icons/bs";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import authService from "../../authentication/auth";
-import { useSelector } from "react-redux";
 
 function Header() {
   const [username, setUsername] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -19,6 +17,8 @@ function Header() {
       if (exp < Math.floor(Date.now() / 1000)) authService.logoutUser();
     } catch (e) {
       authService.logoutUser();
+      console.log(e);
+      
     }
   }, []);
 
@@ -52,9 +52,12 @@ function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-r from-orange-400 to-blue-600 text-white shadow-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="flex justify-center space-x-3 items-center">
+        <div className="rounded-full hidden md:block"><img className="w-10 h-10" src="../../../public/logo.svg" alt="logo"/></div>
         <Link to="/" className="text-xl font-bold hover:opacity-90">
           PARIVRAJAK
         </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:items-center md:justify-center md:space-x-8">

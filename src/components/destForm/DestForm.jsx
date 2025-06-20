@@ -266,7 +266,7 @@ function DestForm() {
 
           <div className="flex flex-col gap-1">
             <label htmlFor="destImg" className="font-medium">
-              Destination Banner Image
+              Destination Banner Image <span className="text-xs text-red-500">( Max 1 MB )</span>
             </label>
             <input
               type="file"
@@ -313,8 +313,8 @@ function DestForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex flex-col gap-1">
-                <label htmlFor={`hotelImg${i}`} className="font-medium">
-                  Hotel Image {i}
+                <label htmlFor={`hotelImg${i}`} className="font-medium float-left">
+                  Hotel Image {i} <span className="text-xs text-red-500">( Max 1 MB )</span>
                 </label>
                 <input
                   type="file"
@@ -339,7 +339,7 @@ function DestForm() {
           >
             Submit
           </button>
-          <Link to="/" className="md:ml-2">
+          <Link to="/dashboard" className="md:ml-2">
             <button
               type="button"
               className="bg-red-500 text-white font-semibold px-6 py-3 rounded-md hover:bg-red-600"

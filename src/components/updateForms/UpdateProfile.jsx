@@ -68,7 +68,7 @@ function UpdateProfile() {
     init();
   }, [navigate, setValue]);
 
-  const update = async ({ name, orgname, phone, email, loc }) => {
+  const update = async ({ name, orgname, phone, loc }) => {
     setErrorMessage("");
     try {
       const token = localStorage.getItem("jwtToken");

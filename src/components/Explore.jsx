@@ -147,7 +147,7 @@ function Explore() {
             ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}
           `}
         >
-          <div className="h-full overflow-y-auto p-4">
+          <div className="h-full overflow-y-auto px-4 py-6">
             <h2 className="text-lg font-semibold mb-4">Filters</h2>
 
             {/* budget */}

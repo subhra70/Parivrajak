@@ -88,6 +88,7 @@ export class AuthService {
         const { token, username } = response.data;
         localStorage.setItem("jwtToken", token);
         localStorage.setItem("username", username);
+        window.dispatchEvent(new Event("userChanged"));
       }
       return response.status;
     } catch (error) {

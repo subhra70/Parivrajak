@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 
 import { FcGoogle } from "react-icons/fc";
 import AuthService from "../authentication/auth";
@@ -13,35 +13,37 @@ function OrgLogin() {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [disableSubmit,setDisableSubmit]=useState(false)
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const login = async (data) => {
-    setError("");
-    setDisableSubmit(true)
+    setError(false);
+    setDisableSubmit(true);
+
     try {
-      const status = await AuthService.orgLogin(data);
-      if (status==200) {
-        setMessage("Login Successfull")
-        setDisableSubmit(false)
+      const response = await AuthService.orgLogin(data);
+      console.log("Login response:", response);
+
+      if (response === 200) {
+        setMessage("Login Successful");
+        setDisableSubmit(false);
         const userData = localStorage.getItem("username");
-        if (userData!="") {
+
+        if (userData !== "") {
           dispatch(authLogin(userData));
           navigate("/dashboard");
         }
-      }
-      else{
-        setDisableSubmit(false)
-        setError(true)
+      } else {
+        setError(true);
+        setDisableSubmit(false);
         setMessage("Invalid Request");
       }
     } catch (error) {
-      setDisableSubmit(false)
-      console.log(error);
+      console.error("Login error:", error);
       setError(true);
       setMessage("Invalid Request");
+      setDisableSubmit(false);
     }
   };
-
 
   return (
     <div className="flex items-center justify-center pt-20 px-4">
@@ -106,11 +108,20 @@ function OrgLogin() {
           </div>
 
           <button
+            type="button"
+            className="bg-none float-end underline"
+            onClick={() =>
+              navigate("/emailInp", { state: { from: "orgLogin" } })
+            }
+          >
+            Forgot Password?
+          </button>
+          <button
             type="submit"
             className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition"
             disabled={disableSubmit}
           >
-            {disableSubmit?"Signing In":"Sign In"}
+            {disableSubmit ? "Signing In" : "Sign In"}
           </button>
         </form>
 
@@ -124,7 +135,10 @@ function OrgLogin() {
 
         <p className="text-sm text-center text-gray-600">
           Don't have an account?{" "}
-          <Link to="/orgSignup" className="text-orange-600 hover:underline font-medium">
+          <Link
+            to="/orgSignup"
+            className="text-orange-600 hover:underline font-medium"
+          >
             Create one
           </Link>
         </p>

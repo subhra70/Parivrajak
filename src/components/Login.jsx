@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import AuthService from "../authentication/auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,37 +12,33 @@ function Login() {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [disableSubmit,setDisableSubmit]=useState(false)
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const login = async (data) => {
     setError("");
-    setDisableSubmit(true)
+    setDisableSubmit(true);
     try {
       const status = await AuthService.userLogin(data);
-      if (status==200) {
-        setMessage("Login Successfull")
-        setDisableSubmit(false)
+      if (status == 200) {
+        setMessage("Login Successfull");
+        setDisableSubmit(false);
         const userData = localStorage.getItem("username");
-        if (userData!="") {
+        if (userData != "") {
           dispatch(authLogin(userData));
           navigate("/");
         }
-      }
-      else{
-        setError(true)
-        setDisableSubmit(false)
+      } else {
+        setError(true);
+        setDisableSubmit(false);
         setMessage("Invalid Request");
       }
     } catch (error) {
       setError(true);
-      setDisableSubmit(false)
+      setDisableSubmit(false);
       setMessage("Invalid Request");
       console.log(error);
-      
     }
   };
-
-
   return (
     <div className="flex items-center justify-center pt-20 px-4">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-6">
@@ -104,13 +100,21 @@ function Login() {
               <span className="text-sm text-red-600 mt-1 block">{error}</span>
             )}
           </div>
-
+          <button
+            type="button"
+            className="bg-none float-end underline"
+            onClick={() =>
+              navigate("/emailInp", { state: { from: "userLogin" } })
+            }
+          >
+            Forgot Password?
+          </button>
           <button
             type="submit"
             className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition"
             disabled={disableSubmit}
           >
-            {disableSubmit?"Signing In":"Sign In"}
+            {disableSubmit ? "Signing In" : "Sign In"}
           </button>
         </form>
 
@@ -124,7 +128,10 @@ function Login() {
 
         <p className="text-sm text-center text-gray-600">
           Don't have an account?{" "}
-          <Link to="/Signup" className="text-orange-600 hover:underline font-medium">
+          <Link
+            to="/Signup"
+            className="text-orange-600 hover:underline font-medium"
+          >
             Create one
           </Link>
         </p>

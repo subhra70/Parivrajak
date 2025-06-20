@@ -56,9 +56,9 @@ const OtpInput = () => {
       if (response.status === 200) {
         setMessage("OTP verification successful.");
         setIsError(false);
-        localStorage.removeItem("email");
-        localStorage.removeItem("type");
         if (type === "User") {
+          localStorage.removeItem("email");
+          localStorage.removeItem("type");
           const result = await authService.createUserAccount(data);
           if (result === 201) {
             navigate("/login");
@@ -67,7 +67,9 @@ const OtpInput = () => {
             setIsError(true);
             navigate("/");
           }
-        } else {
+        } else if (type === "Organizer") {
+          localStorage.removeItem("email");
+          localStorage.removeItem("type");
           const result = await authService.createOrgAccount(data);
           if (result === 201) {
             navigate("/orglogin");
@@ -76,10 +78,13 @@ const OtpInput = () => {
             setIsError(true);
             navigate("/");
           }
+        } else {
+          navigate("/resetPass")
         }
       }
     } catch (err) {
       setMessage("Invalid OTP or server error.");
+      console.log(err);
       setIsError(true);
     }
   };
@@ -101,6 +106,7 @@ const OtpInput = () => {
       }
     } catch (err) {
       setResendMessage("Failed to resend OTP. Try again.");
+      console.log(err);
     }
 
     setTimeout(() => setResendMessage(""), 3000);
@@ -118,14 +124,14 @@ const OtpInput = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="flex gap-2 justify-center items-center"
+        className="flex gap-1 justify-center items-center pt-5"
       >
         {[...Array(otpLength)].map((_, index) => (
           <input
             key={index}
-            type="text"
+            type="number"
             maxLength="1"
-            className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-8 h-8 md:w-12 md:h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={(e) => handleChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             ref={(el) => (inputRefs.current[index] = el)}

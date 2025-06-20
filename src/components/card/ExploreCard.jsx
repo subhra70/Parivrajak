@@ -7,7 +7,8 @@ import authService from "../../authentication/auth";
 
 function ExploreCard({ destination }) {
   const [banner, setBanner] = useState("");
-  const { id, title, ratings, price, discount, destType } = destination;
+  const { id, title, ratings, price, discount, destType, orgId, place } =
+    destination;
   const navigate = useNavigate();
   const discountedPrice =
     discount > 0 ? price - Math.round((price * discount) / 100) : price;
@@ -32,7 +33,8 @@ function ExploreCard({ destination }) {
     fetchBanner();
   }, [id, navigate]);
 
-  const savePackage = async () => {
+  const savePackage = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -44,7 +46,6 @@ function ExploreCard({ destination }) {
         authService.logoutUser();
         return navigate("/login");
       }
-
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/saveProduct`,
         {
@@ -62,8 +63,16 @@ function ExploreCard({ destination }) {
       console.log(error);
     }
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+    const year = today.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-  const purchase = async () => {
+  const purchase = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -75,15 +84,22 @@ function ExploreCard({ destination }) {
         authService.logoutUser();
         return navigate("/login");
       }
+      const date = getCurrentDate();
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/purchase`,
         {
-          userId: -1,
+          orgId: orgId.id,
+          place: place,
+          amount: discountedPrice,
+          date: date,
           destId: id,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.status === 200) {
@@ -94,7 +110,7 @@ function ExploreCard({ destination }) {
     }
   };
   return (
-    <div className="flex flex-col bg-white rounded-lg shadow hover:shadow-lg transition duration-300 w-full">
+    <form className="flex flex-col bg-white rounded-lg shadow hover:shadow-lg transition duration-300 w-full">
       {/* ─── image ─── */}
       <img
         src={banner}
@@ -112,19 +128,21 @@ function ExploreCard({ destination }) {
         <div className="flex justify-between items-center mb-4">
           {/* ratings */}
           <div>
-            <span className="font-bold">Ratings:</span>
+            <span className="font-bold text-sm md:text-base">Ratings:</span>
             <div className="flex items-center gap-1 text-sm text-gray-600">
               <Star size={16} className="fill-current text-yellow-500" />
-              <span className="font-medium">{ratings}</span>
+              <span className="font-medium text-sm md:text-base">
+                {ratings}
+              </span>
             </div>
           </div>
 
           {/* Type */}
           <div>
-            <span className="font-bold">Visit with</span>
+            <span className="font-bold text-sm md:text-base">Visit with</span>
             <div className="flex items-center gap-1 text-sm text-gray-600">
               {destType.map((item, index) => (
-                <span key={index} className="font-medium">
+                <span key={index} className="font-medium text-sm md:text-base">
                   {item}{" "}
                 </span>
               ))}
@@ -138,7 +156,7 @@ function ExploreCard({ destination }) {
                 <span className="block line-through text-xs text-gray-500">
                   ₹{price}
                 </span>
-                <span className="block text-lg font-bold text-green-600">
+                <span className="block text-md md:text-lg font-bold text-green-600">
                   ₹{discountedPrice}
                 </span>
               </>
@@ -152,28 +170,28 @@ function ExploreCard({ destination }) {
         </div>
 
         {/* buttons */}
-        <div className="mt-auto flex flex-row justify-between gap-2">
+        <div className="mt-auto flex flex-row justify-center md:justify-between gap-1 md:gap-2">
           <button
             onClick={purchase}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-sm md:text-base"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-3 py-2 rounded-md text-sm md:text-base"
           >
             Purchase
           </button>
           <button
             onClick={savePackage}
-            className="rounded-md bg-green-600 font-semibold px-3 text-white hiver:bg-green-700 transition-shadow shadow-md hover:shadow-lg"
+            className="rounded-md bg-green-600 px-2 md:px-3 text-white hiver:bg-green-700 transition-shadow shadow-md hover:shadow-lg"
           >
             Save
           </button>
 
           <Link to={`/details/${id}`}>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md text-sm md:text-base">
+            <button className="bg-orange-500 hover:bg-orange-600 text-white px-2 md:px-3 py-2 rounded-md text-sm md:text-base">
               Customize
             </button>
           </Link>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 

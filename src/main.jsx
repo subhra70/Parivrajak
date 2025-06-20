@@ -24,6 +24,8 @@ import Details from "./components/card/Details.jsx";
 import History from "./components/card/History.jsx";
 import OtpInput from "./components/OtpInput.jsx";
 import EditPost from "./components/updateForms/EditPost.jsx";
+import EmailInput from "./components/EmailInput.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +44,8 @@ const router = createBrowserRouter(
       <Route path="history" element={<History />} />
       <Route path="editPost/:id" element={<EditPost />} />
       <Route path="otp" element={<OtpInput />} />
+      <Route path="emailInp" element={<EmailInput/>}/>
+      <Route path="resetPass" element={<ResetPassword/>}/>
     </Route>
   )
 );
