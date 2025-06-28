@@ -15,19 +15,24 @@ function Signup() {
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passError, setPassError] = useState("");
-  const [disableSubmit,setDisableSubmit]=useState(false)
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const signup = async (data) => {
     setErrorMessage("");
     if (data.name === "") {
       setNameError("Empty or Invalid Name");
+    } else if (!/^\s*[A-Za-z]+(?: [A-Za-z]+)+\s*$/.test(data.name)) {
+      isNameErr = true;
+      setNameError("Name should not contain digit,special character");
     } else {
       isNameErr = false;
       setNameError("");
     }
     if (data.email === "") {
       setEmailError("Empty email");
-    } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(data.email)) {
+    } else if (
+      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
+    ) {
       setEmailError("Invalid Email Format");
     } else {
       isEmailErr = false;
@@ -46,7 +51,7 @@ function Signup() {
       setPassError("");
     }
     if (!isNameErr && !isEmailErr && !isPassErr) {
-      setDisableSubmit(true)
+      setDisableSubmit(true);
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/sendOtp`,
@@ -59,14 +64,14 @@ function Signup() {
         );
         if (response.status === 200) {
           setError(false);
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setErrorMessage("OTP Sent Successfully");
           localStorage.setItem("email", data.email);
           localStorage.setItem("type", "User");
           navigate("/otp", { state: { userData: data } });
         } else {
           setError(true);
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setErrorMessage("Invalid Email Id");
         }
       } catch (error) {
@@ -79,9 +84,9 @@ function Signup() {
               "Something went wrong. Status: " + error.response.status
             );
           }
-          setDisableSubmit(false)
+          setDisableSubmit(false);
         } else {
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setErrorMessage("Network or Server Error");
         }
       }
@@ -189,12 +194,18 @@ function Signup() {
             className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition"
             disabled={disableSubmit}
           >
-            {disableSubmit?"Signing Up":"Sign Up"}
+            {disableSubmit ? "Signing Up" : "Sign Up"}
           </button>
         </form>
 
         {/* Google Sign In */}
-        <button className="flex w-full items-center justify-center gap-3 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition border border-gray-300">
+        <button
+          className="flex w-full items-center justify-center gap-3 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition border border-gray-300"
+          onClick={() =>
+            (window.location.href =
+              "http://localhost:8080/oauth2/authorization/google")
+          }
+        >
           <FcGoogle size={24} />
           <span className="font-medium text-gray-700">
             Continue with Google

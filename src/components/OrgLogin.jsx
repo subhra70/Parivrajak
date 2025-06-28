@@ -125,13 +125,13 @@ function OrgLogin() {
           </button>
         </form>
 
-        <button
+        {/* <button
           className="flex w-full items-center justify-center gap-3 p-2 rounded-full bg-gray-100 text-gray-700 border hover:bg-gray-200 transition"
           type="button"
         >
           <FcGoogle size={24} />
           <span>Continue with Google</span>
-        </button>
+        </button> */}
 
         <p className="text-sm text-center text-gray-600">
           Don't have an account?{" "}

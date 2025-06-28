@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import AuthService from "../authentication/auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,6 +13,18 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [disableSubmit, setDisableSubmit] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const username = params.get("username");
+    if (token) {
+      localStorage.setItem("jwtToken", token);
+      localStorage.setItem("username",username);
+      window.dispatchEvent(new Event("userChanged"));
+      navigate("/");
+    }
+  }, []);
 
   const login = async (data) => {
     setError("");
@@ -121,6 +133,10 @@ function Login() {
         <button
           className="flex w-full items-center justify-center gap-3 p-2 rounded-full bg-gray-100 text-gray-700 border hover:bg-gray-200 transition"
           type="button"
+          onClick={() =>
+            (window.location.href =
+              "http://localhost:8080/oauth2/authorization/google")
+          }
         >
           <FcGoogle size={24} />
           <span>Continue with Google</span>
