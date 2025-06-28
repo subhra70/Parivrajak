@@ -135,7 +135,7 @@ function Login() {
           type="button"
           onClick={() =>
             (window.location.href =
-              "http://localhost:8080/oauth2/authorization/google")
+              "https://backend-parivrajak.onrender.com/oauth2/authorization/google")
           }
         >
           <FcGoogle size={24} />
