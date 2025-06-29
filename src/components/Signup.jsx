@@ -203,7 +203,7 @@ function Signup() {
           className="flex w-full items-center justify-center gap-3 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition border border-gray-300"
           onClick={() =>
             (window.location.href =
-              "https://parivrajak-backend.onrender.com/oauth2/authorization/google")
+              `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`)
           }
         >
           <FcGoogle size={24} />
