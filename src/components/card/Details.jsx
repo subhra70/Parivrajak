@@ -288,9 +288,9 @@ function Details() {
           />
         </label>
       </div>
-      <div className="flex gap-3 text-sm px-4">
-        <h1 className="text-lg font-bold">Description:</h1>
-        <span className="text-left text-md">
+      <div className="flex flex-col md:flex-row gap-3 text-sm px-4">
+        <h1 className="text-base md:text-lg font-bold">Description:</h1>
+        <span className="text-left">
           All the information provided above is accurate. You can choose a
           package based on the number of members and the number of days you wish
           to stay. The tour plans vary depending on the duration of your stay.

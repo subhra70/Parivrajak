@@ -46,7 +46,7 @@ function OrgLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center pt-20 px-4">
+    <div className="flex items-center justify-center pt-20 p-16">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-6">
         {error && (
           <div className="text-center text-red-600 font-medium">{message}</div>

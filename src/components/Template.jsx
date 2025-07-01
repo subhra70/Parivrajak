@@ -11,7 +11,7 @@ function Template() {
   const shouldHideFooter = hideFooterOnPaths.includes(location.pathname);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col justify-between min-h-screen">
       <Header />
       <main className="flex-grow flex-col">
         <Outlet />

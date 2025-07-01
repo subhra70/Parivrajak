@@ -15,6 +15,7 @@ function UpdateProfile() {
   } = useForm();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [disableSubmit,setDisableSubmit]=useState(false)
   const navigate = useNavigate();
 
   // States for controlled inputs
@@ -70,6 +71,7 @@ function UpdateProfile() {
 
   const update = async ({ name, orgname, phone, loc }) => {
     setErrorMessage("");
+    setDisableSubmit(true)
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -96,14 +98,17 @@ function UpdateProfile() {
       );
       if (updatedAccount.status === 200) {
         setError(false);
+        setDisableSubmit(false)
         reset()
         setErrorMessage("Updation Successful");
         navigate("/dashboard")
       } else {
+        setDisableSubmit(false)
         setError(true);
         setErrorMessage("Updation Unsuccessful");
       }
     } catch (error) {
+      setDisableSubmit(false)
       console.log(error);
       setError(true);
       setErrorMessage("Update unsuccessful");
@@ -230,8 +235,9 @@ function UpdateProfile() {
           <button
             type="submit"
             className="bg-orange-500 text-white font-semibold px-3 py-3 rounded-md hover:bg-orange-600 transition"
+            disabled={disableSubmit}
           >
-            Save Changes
+            {disableSubmit?"Saving...":"Save Changes"}
           </button>
           <Link to={"/dashboard"}>
             <button

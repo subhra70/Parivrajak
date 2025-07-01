@@ -18,6 +18,7 @@ function EditPost() {
   const [hotelId, setHotelId] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [hotelImages, setHotelImages] = useState([]);
+  const [disableSubmit,setDisableSubmit]=useState(false)
   const [image, setImage] = useState({
     destImage: null,
     image1: null,
@@ -138,6 +139,7 @@ function EditPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setDisableSubmit(true)
     setErrors({});
 
     const imageData = new FormData();
@@ -170,6 +172,10 @@ function EditPost() {
       );
 
       setAddStatus(response.status === 200 && imageResponse.status === 200);
+      if(addStatus)
+      {
+        setDisableSubmit(false)
+      }
     } catch (err) {
       console.error(err);
       setAddStatus(false);
@@ -177,6 +183,7 @@ function EditPost() {
         ...prev,
         general: "Failed to update post. Please try again.",
       }));
+      setDisableSubmit(false)
     }
   };
 
@@ -385,8 +392,9 @@ function EditPost() {
           <button
             type="submit"
             className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-md hover:bg-orange-600"
+            disabled={disableSubmit}
           >
-            Submit
+            {disableSubmit?"Submit in Process":"Submit"}
           </button>
           <Link to="/dashboard" className="md:ml-2">
             <button

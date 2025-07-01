@@ -1,9 +1,11 @@
 import React from "react";
-
 import background from "../assets/home_bg3.jpg";
 import kedarnath from "../assets/kedarnath.jpg";
 import meghalaya from "../assets/meghalaya.jpg";
 import sundarban from "../assets/sundarban.jpg";
+import kashmir from "../assets/winter_kashmir.jpg";
+import varanasi from "../assets/varanasi.jpg";
+import andaman from "../assets/andaman.jpg";
 import organizer from "../assets/organizer.jpg";
 import { Link } from "react-router-dom";
 import { FaArrowCircleRight } from "react-icons/fa";
@@ -73,13 +75,13 @@ function Home() {
               <HomeCard img={kedarnath} title="Kedarnath" />
             </div>
             <div className="min-w-[250px] inline-block">
-              <HomeCard img={sundarban} title="Sundarban" />
+              <HomeCard img={andaman} title="Andaman & Nicobar" />
             </div>
             <div className="min-w-[250px] inline-block">
-              <HomeCard img={meghalaya} title="Meghalaya" />
+              <HomeCard img={varanasi} title="Varanasi" />
             </div>
             <div className="min-w-[250px] inline-block">
-              <HomeCard img={kedarnath} title="Kedarnath" />
+              <HomeCard img={kashmir} title="Kashmir" />
             </div>
           </div>
         </div>
