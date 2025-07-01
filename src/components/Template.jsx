@@ -6,18 +6,17 @@ import Footer from './footer/Footer';
 function Template() {
   const location = useLocation();
 
-  const hideFooterOnPaths = ['/', '/otp', '/emailInp', '/resetPass'];
+  // Don't show footer on the home page
+  const hideFooterOnPaths = ['/','/otp','/emailInp','/resetPass'];
   const shouldHideFooter = hideFooterOnPaths.includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      
-      <main className="flex-grow">
+      <main className="flex-grow flex-col justify-between">
         <Outlet />
+        {!shouldHideFooter && <Footer />}
       </main>
-
-      {!shouldHideFooter && <Footer />}
     </div>
   );
 }
