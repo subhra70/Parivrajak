@@ -1,17 +1,39 @@
-<<<<<<< HEAD
-# React + Vite
+# Project Name
+Parivrajak
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Overview
+Parivrajak is a travel guide platform that allows users to explore various travel packages posted by multiple tour organizers. The platform enables users to select packages based on preferences such as budget, accommodation type, and duration. It facilitates transparency and direct communication between users and organizers.
 
-Currently, two official plugins are available:
+## Payment
+Payment is done directly to organizer not through the site. Because user may want to make some changes in plan or some other reasons which may increase or decrease the Price.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
+🌍 Explore a wide range of tour packages
 
-## Expanding the ESLint configuration
+📅 Filter packages by duration, price, or amenities
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# Parivrajak
-A tour guide platform that brings different tour organizer in a single platform to post their tour packages and details. User gets a lot of options to visit places and can choice their tour by comaparing with different orgaizer.
->>>>>>> 87b807c3b0e136dbd0357e4200037b5ebab037a8
+🏨 View accommodation details
+
+📞 Direct contact option with tour organizers
+
+🔐 User authentication & authorization
+
+📦 Organizer dashboard for managing packages and also monitoring the selling details
+
+## 🛠️ Tech Stack
+Frontend:
+React.js
+
+Tailwind CSS
+
+Backend:
+Spring Boot
+
+Spring MVC & Spring REST
+
+Spring Data JPA
+
+PostgreSQL
+
+🔗 Live Demo
+👉 <a href="https://parivrajak.vercel.app/" target="_blank">Visit Parivrajak 🌍</a>
