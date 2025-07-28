@@ -55,7 +55,7 @@ function OrgLogin() {
           Organization Login
         </h2>
 
-        <form className="space-y-4" onSubmit={handleSubmit(login)}>
+        <form className="space-y-6" onSubmit={handleSubmit(login)}>
           <div>
             <label
               htmlFor="email"
