@@ -139,7 +139,7 @@ function ExploreCard({ destination }) {
 
           {/* Type */}
           <div>
-            <span className="font-bold text-sm md:text-base">Visit with</span>
+            <span className="font-bold text-sm md:text-base">Tour Type</span>
             <div className="flex items-center gap-1 text-sm text-gray-600">
               {destType.map((item, index) => (
                 <span key={index} className="font-medium text-sm md:text-base">
