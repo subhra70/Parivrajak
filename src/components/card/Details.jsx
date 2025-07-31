@@ -190,7 +190,6 @@ function Details() {
   const pricePerPerson =
     ((basePrice + (perDayPrice - 100) * dayDiff) * (100 - discount)) / 100;
   const totalPrice = pricePerPerson * person;
-  if (!product) return <p className="p-4 text-center">Loading…</p>;
 
   return (
     <form className="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-xl px-6 py-10 mt-12 space-y-10">
@@ -198,14 +197,14 @@ function Details() {
       <div className="flex justify-center">
         <img
           src={imageUrl}
-          alt={product.title}
+          alt={product?.title||"image"}
           className="w-full md:w-4/5 h-64 object-cover rounded-2xl shadow-lg"
         />
       </div>
 
       {/* Title */}
       <h2 className="text-center text-4xl font-extrabold text-blue-900 tracking-tight">
-        {product.title}
+        {product?.title || "Loading..."}
       </h2>
 
       {/* Info Row */}
@@ -213,19 +212,19 @@ function Details() {
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-700">Ratings:</span>
           <Star size={16} className="fill-current text-yellow-500" />
-          <span>{product.ratings}/5</span>
+          <span>{product?.ratings || 0}/5</span>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-700">Destination:</span>
-          <span className="text-gray-800">{product.place}</span>
+          <span className="text-gray-800">{product?.place || "Loading..."}</span>
         </div>
 
         {organization && (
           <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-700">Organizer:</span>
             <span className="text-indigo-600 font-bold text-base">
-              {organization.organization}
+              {organization?.organization || "Loading..."}
             </span>
           </div>
         )}
@@ -233,21 +232,25 @@ function Details() {
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-700">Price:</span>
           <span className="px-3 py-1 rounded-full bg-orange-500 text-white font-semibold">
-            ₹{totalPrice.toFixed(2)}
+            ₹{totalPrice?.toFixed(2) || "Loading..."}
           </span>
         </div>
 
         <label className="flex items-center gap-2">
           <span className="font-semibold text-gray-700">Trip Type:</span>
           <div className="flex gap-1 flex-wrap">
-            {product.destType.map((item, index) => (
-              <span
-                key={index}
-                className="bg-gray-100 px-2 py-0.5 rounded-full text-gray-800 text-xs font-medium"
-              >
-                {item}
-              </span>
-            ))}
+            {product?.destType?.length > 0 ? (
+              product.destType.map((item, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-100 px-2 py-0.5 rounded-full text-gray-800 text-xs font-medium"
+                >
+                  {item}
+                </span>
+              ))
+            ) : (
+              <span className="text-gray-400">Loading...</span>
+            )}
           </div>
         </label>
       </div>
@@ -263,15 +266,20 @@ function Details() {
             value={selectedDuration}
             onChange={(e) => setSelectedDuration(Number(e.target.value))}
             className="rounded border px-3 py-2 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+            disabled={!product}
           >
-            {Array.from(
-              { length: product.maxDays - product.minDays + 1 },
-              (_, i) => product.minDays + i
-            ).map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
+            {product ? (
+              Array.from(
+                { length: product.maxDays - product.minDays + 1 },
+                (_, i) => product.minDays + i
+              ).map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))
+            ) : (
+              <option>Loading…</option>
+            )}
           </select>
         </label>
 
@@ -295,9 +303,9 @@ function Details() {
           package based on the number of members and the number of days you wish
           to stay. The tour plans vary depending on the duration of your stay.
           To get a detailed day-wise itinerary for the entire tour, feel free to
-          contact us at <b>{organization && organization.phone}</b>. We will provide you with all the
-          necessary information, including how the tour will proceed from the
-          first day to the last.
+          contact us at <b>{organization?.phone||"0000000000" }</b>. We will
+          provide you with all the necessary information, including how the tour
+          will proceed from the first day to the last.
         </span>
       </div>
 
@@ -319,7 +327,7 @@ function Details() {
       )}
 
       {/* Hotel Info Card */}
-      {product.hotelName && (
+      {product?.hotelName && (
         <div className="rounded-2xl shadow-md border p-6 bg-gray-50 space-y-4">
           <h3 className="text-xl font-bold text-blue-700 border-b pb-2">
             Hotel Information
