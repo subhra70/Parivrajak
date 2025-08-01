@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdModeEdit } from "react-icons/md";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeDetails } from "../../Store/destSlice";
 import axios from "axios";
-function PostHistoryCard({ product = {},onDelete }) {
+function PostHistoryCard({ product = {}, onDelete }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id, title, place, price, orgid } = product;
   const [imageUrl, setImageUrl] = useState("");
@@ -35,31 +38,38 @@ function PostHistoryCard({ product = {},onDelete }) {
       }
     };
     fetchImage();
-  },[id,navigate]);
+  }, [id, navigate]);
 
-  const deleteProduct=async()=>{
+  const deleteProduct = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
-        if (!token) return navigate("/orglogin");
+      if (!token) return navigate("/orglogin");
 
-        const { exp } = jwtDecode(token);
-        if (exp * 1000 < Date.now()) {
-          authService.logoutUser();
-          return navigate("/orglogin");
+      const { exp } = jwtDecode(token);
+      if (exp * 1000 < Date.now()) {
+        authService.logoutUser();
+        return navigate("/orglogin");
+      }
+      console.log("Calling delete method");
+
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/product/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-        const response=await axios.delete(`${import.meta.env.VITE_API_URL}/product/${id}`,{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        })
-        if(response.status===200){
-          alert("Product deleted")
-          onDelete(id)
-        }
+      );
+
+      if (response.status === 200) {
+        dispatch(removeDetails(id));
+        alert("Product deleted");
+        onDelete(id);
+      }
     } catch (error) {
+      console.log("hi");
+
       console.log(error);
     }
-  }
+  };
 
   return (
     <div className="w-full flex flex-col sm:flex-row items-center sm:items-start justify-between border border-gray-300 rounded-lg p-4 shadow-sm hover:shadow-md transition gap-4">
@@ -88,12 +98,15 @@ function PostHistoryCard({ product = {},onDelete }) {
 
       {/* Action Buttons */}
       <div className="flex flex-row sm:flex-col gap-4 items-center text-xl text-gray-600">
-        <button className="hover:text-red-600 transition" onClick={deleteProduct}>
-          <MdDelete/>
+        <button
+          className="hover:text-red-600 transition"
+          onClick={deleteProduct}
+        >
+          <MdDelete />
         </button>
         <Link to={`/editPost/${id}`}>
           <button className="hover:text-blue-600 transition">
-            <MdModeEdit/>
+            <MdModeEdit />
           </button>
         </Link>
       </div>

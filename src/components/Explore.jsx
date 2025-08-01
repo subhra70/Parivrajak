@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import ExploreCard from "./card/ExploreCard";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loadData } from "../Store/destSlice";
 import axios from "axios";
-;
 
 function Explore() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /* ── filter labels ────────────────────────────────────── */
   const budgetRanges = [
@@ -18,7 +18,14 @@ function Explore() {
     "11000 and more",
   ];
 
-  const durationRanges = ["All","1 - 3", "4 - 6", "7 - 9", "10 - 12", "13 and more"];
+  const durationRanges = [
+    "All",
+    "1 - 3",
+    "4 - 6",
+    "7 - 9",
+    "10 - 12",
+    "13 and more",
+  ];
 
   /* ── component state ──────────────────────────────────── */
   const [destHistory, setDestHistory] = useState([]);
@@ -33,6 +40,7 @@ function Explore() {
 
   const [startDay, setStartDay] = useState(0);
   const [endDay, setEndDay] = useState(0);
+  const allExploreCard = useSelector((state) => state.dest.destDetails);
 
   /* ── figure out numeric ranges whenever a label changes ─ */
   useEffect(() => {
@@ -41,7 +49,7 @@ function Explore() {
       case "All":
         setStartPrice(0);
         setEndPrice(0);
-        break
+        break;
       case "Less Than 5000":
         setStartPrice(0);
         setEndPrice(5000);
@@ -103,19 +111,52 @@ function Explore() {
   useEffect(() => {
     const fetchDestHistory = async () => {
       try {
-        const {data,status}=await axios.get(`${import.meta.env.VITE_API_URL}/productsFilter`, {
-          params: {
-            startPrice: startPrice,
-            endPrice: endPrice,
-            startDay: startDay,
-            endDay: endDay,
-          },
-        });
-
-        if (status === 200 && Array.isArray(data)) {
-          setDestHistory(data);
+        if (!allExploreCard || allExploreCard.length === 0) {
+          const { data, status } = await axios.get(
+            `${import.meta.env.VITE_API_URL}/productsFilter`,
+            {}
+          );
+          if (status === 200 && Array.isArray(data)) {
+            dispatch(loadData(data));
+            setDestHistory(data);
+          } else {
+            setDestHistory([]);
+          }
         } else {
-          setDestHistory([]);
+          console.log("HII");
+          
+          let filtered = allExploreCard;
+          if (
+            (startPrice !== 0 ||
+            endPrice !== 0) &&
+            startDay === 0 &&
+            endDay === 0
+          ) {
+            filtered = allExploreCard.filter(
+              (item) => item.price >= startPrice && item.price <= endPrice
+            );
+          } else if (
+            startPrice === 0 &&
+            endPrice === 0 &&
+            startDay !== 0 &&
+            endDay !== 0
+          ) {
+            filtered = allExploreCard.filter(
+              (item) =>
+                (item.minDays <= startDay && item.maxDays >= startDay) ||
+                (item.minDays <= endDay && item.maxDays >= endDay)
+            );
+          } else if(startDay!==0 && endDay!==0 && startPrice!==0 && endPrice!==0) {
+            filtered = allExploreCard.filter(
+              (item) =>
+                (item.price >= startPrice &&
+                  item.price <= endPrice &&
+                  item.minDays <= startDay &&
+                  item.maxDays >= startDay) ||
+                (item.minDays <= endDay && item.maxDays >= endDay)
+            );
+          }
+          setDestHistory(filtered);
         }
       } catch (err) {
         console.error(err);
@@ -124,7 +165,7 @@ function Explore() {
     };
 
     fetchDestHistory();
-  }, [startPrice, endPrice, startDay, endDay, navigate]);
+  }, [startPrice, endPrice, startDay, endDay, dispatch]);
 
   /* ── render ───────────────────────────────────────────── */
   return (

@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
+import { useDispatch } from "react-redux";
+import { addDetails } from "../../Store/destSlice";
 
 function DestForm() {
+  const dispatch=useDispatch()
   const [product, setProduct] = useState({
     ptitle: "",
     destination: "",
@@ -126,6 +129,7 @@ function DestForm() {
 
       if (response.status === 200 || response.status === 201) {
         setAddStatus(true);
+        dispatch(addDetails(response.data))
         setErrors({});
         navigate("/dashboard");
       } else {
