@@ -39,10 +39,10 @@ function Details() {
 
         const p = res.data;
         setProduct(p);
-        setSelectedDuration(p.minDays);
         setDiscount(res.data.discount);
         fetchImages(p.hotelId);
         fetchOrganization(p.orgId);
+        setSelectedDuration(p.minDays);
       } catch (err) {
         console.error(err);
         alert("Error fetching product");
