@@ -39,9 +39,9 @@ function Details() {
 
         const p = res.data;
         setProduct(p);
-        setDiscount(res.data.discount);
         fetchImages(p.hotelId);
         fetchOrganization(p.orgId);
+        setDiscount(p.discount);
         setSelectedDuration(p.minDays);
       } catch (err) {
         console.error(err);
