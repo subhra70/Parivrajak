@@ -24,6 +24,7 @@ const destSlice=createSlice({
                 if(state.destDetails[i].id==action.payload.id)
                 {
                     state.destDetails[i]=action.payload
+                    break
                 }
             }
         }

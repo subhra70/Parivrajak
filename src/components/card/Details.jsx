@@ -39,10 +39,10 @@ function Details() {
 
         const p = res.data;
         setProduct(p);
-        setDiscount(res.data.discount);
-        fetchImages();
-        fetchOrganization();
         setSelectedDuration(p.minDays);
+        setDiscount(res.data.discount);
+        fetchImages(p.hotelId);
+        fetchOrganization(p.orgId);
       } catch (err) {
         console.error(err);
         alert("Error fetching product");
@@ -50,7 +50,7 @@ function Details() {
     })();
   }, [discount, id, navigate]);
 
-  const fetchOrganization = async () => {
+  const fetchOrganization = async (p) => {
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) return navigate("/login");
@@ -60,19 +60,21 @@ function Details() {
         await authService.logoutUser();
         return navigate("/login");
       }
-      if (product.orgId !== undefined && product.orgId !== null) {
+      if (p!== undefined && p!== null) {
         const org = await axios.get(
-          `${import.meta.env.VITE_API_URL}/organizer/${product.orgId}`,
+          `${import.meta.env.VITE_API_URL}/organizer/${p.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        if (org.status === 200) setOrganization(org.data);
+        if (org.status === 200){ setOrganization(org.data);
+          console.log("Organization fetched");
+        }
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const fetchImages = async () => {
+  const fetchImages = async (p) => {
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) return navigate("/login");
@@ -95,14 +97,17 @@ function Details() {
       }
 
       const hotelRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/hotelImages/${product.hotelId}`,
+        `${import.meta.env.VITE_API_URL}/hotelImages/${p.hotelId}`,
         { responseType: "json", headers: { Authorization: `Bearer ${token}` } }
       );
       const images = hotelRes.data.map(
         (img) => `data:${img.type};base64,${img.data}`
       );
+      console.log("Hotel images fetched");
+      
       setHotelImages(images);
     } catch (err) {
+      console.log("Unable to fetch image");
       console.error(err);
     }
   };
@@ -303,7 +308,7 @@ function Details() {
           package based on the number of members and the number of days you wish
           to stay. The tour plans vary depending on the duration of your stay.
           To get a detailed day-wise itinerary for the entire tour, feel free to
-          contact us at <b>{organization?.phone||"0000000000" }</b>. We will
+          contact us at <b>{organization?.phone}</b>. We will
           provide you with all the necessary information, including how the tour
           will proceed from the first day to the last.
         </span>

@@ -3,9 +3,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
+import { useDispatch } from "react-redux";
+import { updateDetails } from "../../Store/destSlice";
 
 function EditPost() {
   const { id } = useParams();
+  const dispatch=useDispatch()
   const [product, setProduct] = useState({
     ptitle: "",
     price: 0,
@@ -15,7 +18,7 @@ function EditPost() {
     maxDays: 1,
     type: [],
   });
-  const [hotelId, setHotelId] = useState("");
+  const [hotel, setHotel] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [hotelImages, setHotelImages] = useState([]);
   const [disableSubmit,setDisableSubmit]=useState(false)
@@ -63,7 +66,7 @@ function EditPost() {
             type: data.destType || [],
           });
 
-          setHotelId(data.hotelId);
+          setHotel(data.hotelId);
           fetchImages(data.hotelId);
         }
       } catch (err) {
@@ -77,13 +80,13 @@ function EditPost() {
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
   };
-  const fetchImages = async (hId) => {
+  const fetchImages = async (data) => {
     try {
       const token = localStorage.getItem("jwtToken");
       const { exp } = jwtDecode(token);
       if (exp * 1000 < Date.now()) {
-        await authService.logoutUser();
-        return navigate("/login");
+        await authService.logoutOrganizer();
+        return navigate("/orglogin");
       }
 
       const imgRes = await axios.get(
@@ -98,7 +101,7 @@ function EditPost() {
       }
 
       const hotelRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/hotelImages/${hId}`,
+        `${import.meta.env.VITE_API_URL}/hotelImages/${data.hotelId}`,
         {
           responseType: "json",
           headers: { Authorization: `Bearer ${token}` },
@@ -151,6 +154,11 @@ function EditPost() {
 
     try {
       const token = localStorage.getItem("jwtToken");
+      const { exp } = jwtDecode(token);
+      if (exp * 1000 < Date.now()) {
+        await authService.logoutOrganizer();
+        return navigate("/orglogin");
+      }
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/product/${id}`,
         product,
@@ -161,7 +169,7 @@ function EditPost() {
         }
       );
       const imageResponse = await axios.put(
-        `${import.meta.env.VITE_API_URL}/productImages/${hotelId}/${id}`,
+        `${import.meta.env.VITE_API_URL}/productImages/${hotel.hotelId}/${id}`,
         imageData,
         {
           headers: {
@@ -170,10 +178,17 @@ function EditPost() {
           },
         }
       );
-
-      setAddStatus(response.status === 200 && imageResponse.status === 200);
-      if(addStatus)
+      const success=response.status === 200 && imageResponse.status === 200
+      if(imageResponse.status!==0)
       {
+        console.log("Not called");
+      }
+      setAddStatus(success);
+      if(success)
+      {
+        dispatch(updateDetails(response.data))
+        console.log("Updated");
+        
         setDisableSubmit(false)
       }
     } catch (err) {

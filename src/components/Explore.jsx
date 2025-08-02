@@ -124,11 +124,10 @@ function Explore() {
           }
         } else {
           console.log("HII");
-          
+
           let filtered = allExploreCard;
           if (
-            (startPrice !== 0 ||
-            endPrice !== 0) &&
+            (startPrice !== 0 || endPrice !== 0) &&
             startDay === 0 &&
             endDay === 0
           ) {
@@ -146,14 +145,17 @@ function Explore() {
                 (item.minDays <= startDay && item.maxDays >= startDay) ||
                 (item.minDays <= endDay && item.maxDays >= endDay)
             );
-          } else if(startDay!==0 && endDay!==0 && startPrice!==0 && endPrice!==0) {
+          } else if (
+            startDay !== 0 &&
+            endDay !== 0 &&
+            (startPrice !== 0 || endPrice !== 0)
+          ) {
             filtered = allExploreCard.filter(
               (item) =>
-                (item.price >= startPrice &&
-                  item.price <= endPrice &&
-                  item.minDays <= startDay &&
-                  item.maxDays >= startDay) ||
-                (item.minDays <= endDay && item.maxDays >= endDay)
+                item.price >= startPrice &&
+                item.price <= endPrice &&
+                ((item.minDays <= startDay && item.maxDays >= startDay) ||
+                  (item.minDays <= endDay && item.maxDays >= endDay))
             );
           }
           setDestHistory(filtered);
