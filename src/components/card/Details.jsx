@@ -36,13 +36,15 @@ function Details() {
           }
         );
         if (res.status !== 200) throw new Error("Fetch failed");
-
+        if(res.status===200)
+        {
         const p = res.data;
         setProduct(p);
         fetchImages(p.hotelId);
         fetchOrganization(p.orgId);
         setDiscount(p.discount);
         setSelectedDuration(p.minDays);
+        }
       } catch (err) {
         console.error(err);
         alert("Error fetching product");
