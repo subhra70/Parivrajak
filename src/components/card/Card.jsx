@@ -80,8 +80,7 @@ function Card({ type, product = {}, onDelete }) {
     }
   };
   return (
-    <div className="flex flex-col gap-5">
-      {/* <h1 className="text-3xl font-bold text-left">{type} History</h1> */}
+    // <div className="w-full flex flex-col gap-5">
       <div className="flex flex-col w-full md:w-1/3 gap-4 mt-4 bg-white shadow-md rounded-xl p-4">
         <img
           src={banner}
@@ -125,7 +124,6 @@ function Card({ type, product = {}, onDelete }) {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

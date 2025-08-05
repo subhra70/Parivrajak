@@ -124,7 +124,6 @@ function Explore() {
           }
         } else {
           console.log("HII");
-
           let filtered = allExploreCard;
           if (
             (startPrice !== 0 || endPrice !== 0) &&
@@ -240,7 +239,7 @@ function Explore() {
           {destHistory.length ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-1">
               {destHistory.map((d) => (
-                <ExploreCard key={d.id} id={d.id} destination={d} />
+                <ExploreCard key={d.id} destination={d} />
               ))}
             </div>
           ) : (

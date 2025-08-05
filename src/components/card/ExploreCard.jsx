@@ -44,8 +44,11 @@ function ExploreCard({ destination }) {
       const { exp } = jwtDecode(token);
       if (exp * 1000 < Date.now()) {
         authService.logoutUser();
-        return navigate("/login");
+        navigate("/login");
+        return
       }
+      console.log(token);
+      console.log("Save called:",id);
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/saveProduct`,
         {
@@ -57,9 +60,12 @@ function ExploreCard({ destination }) {
         }
       );
       if (response.status === 200) {
+        console.log("Save successfull");
         alert("Package Saved");
       }
+      console.log(response.status);
     } catch (error) {
+      console.log("Save failed");
       console.log(error);
     }
   };
@@ -82,7 +88,8 @@ function ExploreCard({ destination }) {
       const { exp } = jwtDecode(token);
       if (exp * 1000 < Date.now()) {
         authService.logoutUser();
-        return navigate("/login");
+        navigate("/login");
+        return;
       }
       const date = getCurrentDate();
 
@@ -110,7 +117,7 @@ function ExploreCard({ destination }) {
     }
   };
   return (
-    <form className="flex flex-col bg-white rounded-lg shadow hover:shadow-lg transition duration-300 w-full">
+    <div className="flex flex-col bg-white rounded-lg shadow hover:shadow-lg transition duration-300 w-full">
       {/* ─── image ─── */}
       <img
         src={banner}
@@ -172,14 +179,16 @@ function ExploreCard({ destination }) {
         {/* buttons */}
         <div className="mt-auto flex flex-row justify-center md:justify-between gap-1 md:gap-2">
           <button
+            type="button"
             onClick={purchase}
             className="bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-3 py-2 rounded-md text-sm md:text-base"
           >
             Purchase
           </button>
           <button
+            type="button"
             onClick={savePackage}
-            className="rounded-md bg-green-600 px-2 md:px-3 text-white hiver:bg-green-700 transition-shadow shadow-md hover:shadow-lg"
+            className="rounded-md bg-green-500 px-2 md:px-3 text-white hiver:bg-green-700 transition-shadow shadow-md hover:bg-green-600"
           >
             Save
           </button>
@@ -191,7 +200,7 @@ function ExploreCard({ destination }) {
           </Link>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
 
