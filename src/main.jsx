@@ -46,6 +46,7 @@ const router = createBrowserRouter(
       <Route path="otp" element={<OtpInput />} />
       <Route path="emailInp" element={<EmailInput/>}/>
       <Route path="resetPass" element={<ResetPassword/>}/>
+      <Route path="*" element={<Page404/>}/>
     </Route>
   )
 );
