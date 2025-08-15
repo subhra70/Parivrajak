@@ -7,7 +7,7 @@ function Template() {
   const location = useLocation();
 
   // Don't show footer on the home page
-  const hideFooterOnPaths = ['/','/otp','/emailInp','/resetPass','/history','/*'];
+  const hideFooterOnPaths = ['/','/otp','/emailInp','/resetPass','/history'];
   const shouldHideFooter = hideFooterOnPaths.includes(location.pathname);
 
   return (

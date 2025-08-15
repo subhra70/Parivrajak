@@ -30,6 +30,7 @@ import Page404 from "./components/Error/Page404.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
+    <>
     <Route path="/" element={<Template />}>
       <Route path="" element={<Home />} />
       <Route path="login" element={<Login />} />
@@ -47,8 +48,9 @@ const router = createBrowserRouter(
       <Route path="otp" element={<OtpInput />} />
       <Route path="emailInp" element={<EmailInput/>}/>
       <Route path="resetPass" element={<ResetPassword/>}/>
-      <Route path="*" element={<Page404/>}/>
     </Route>
+    <Route path="*" element={<Page404/>}/>
+    </>
   )
 );
 
