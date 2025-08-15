@@ -26,6 +26,7 @@ import OtpInput from "./components/OtpInput.jsx";
 import EditPost from "./components/updateForms/EditPost.jsx";
 import EmailInput from "./components/EmailInput.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
+import Page404 from "./components/Error/Page404.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
