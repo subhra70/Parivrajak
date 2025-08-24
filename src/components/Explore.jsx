@@ -37,6 +37,7 @@ function Explore() {
 
   const [startPrice, setStartPrice] = useState(0);
   const [endPrice, setEndPrice] = useState(0);
+  const [loading,setLoading]=useState(true)
 
   const [startDay, setStartDay] = useState(0);
   const [endDay, setEndDay] = useState(0);
@@ -119,11 +120,11 @@ function Explore() {
           if (status === 200 && Array.isArray(data)) {
             dispatch(loadData(data));
             setDestHistory(data);
+            setLoading(false)
           } else {
             setDestHistory([]);
           }
         } else {
-          console.log("HII");
           let filtered = allExploreCard;
           if (
             (startPrice !== 0 || endPrice !== 0) &&
@@ -244,7 +245,7 @@ function Explore() {
             </div>
           ) : (
             <p className="text-center text-gray-500">
-              No packages match your filters.
+              {loading?"Please wait for sometime...":"No Packages Matches Your Filter"}
             </p>
           )}
         </section>
