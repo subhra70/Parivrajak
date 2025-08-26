@@ -17,7 +17,7 @@ function DestForm() {
     maxDays: 1,
     type: [],
   });
-
+  const [isSubmit,setIsSubmit]=useState(true)
   const [image, setImage] = useState({
     image1: null,
     image2: null,
@@ -98,8 +98,10 @@ function DestForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmit(false)
     if (!validateForm()) {
       setAddStatus(false);
+      setIsSubmit(true)
       return;
     }
 
@@ -131,13 +133,16 @@ function DestForm() {
         setAddStatus(true);
         dispatch(addDetails(response.data))
         setErrors({});
+        setIsSubmit(true)
         navigate("/dashboard");
       } else {
         setAddStatus(false);
+        setIsSubmit(true)
       }
     } catch (error) {
       console.log(error);
       setAddStatus(false);
+      setIsSubmit(true)
     }
   };
 
@@ -340,8 +345,9 @@ function DestForm() {
           <button
             type="submit"
             className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-md hover:bg-orange-600"
+            disabled={isSubmit}
           >
-            Submit
+            {isSubmit?"Submit":"Submitting..."}
           </button>
           <Link to="/dashboard" className="md:ml-2">
             <button
