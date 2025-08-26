@@ -345,7 +345,7 @@ function DestForm() {
           <button
             type="submit"
             className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-md hover:bg-orange-600"
-            disabled={isSubmit}
+            disabled={!isSubmit}
           >
             {isSubmit?"Submit":"Submitting..."}
           </button>
