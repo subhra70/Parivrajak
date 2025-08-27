@@ -32,7 +32,7 @@ function History() {
           const data = response.data.map((item) => ({
             id: item.id,
             title: item.title,
-            organizer: item.organizer,
+            organizer: item.orgId.organization,
             destination: item.place,
             price: item.price,
           }));
@@ -57,11 +57,12 @@ function History() {
           const data = response.data.map((item) => ({
             id: item.id,
             title: item.title,
-            organizer: item.organizer,
+            organizer: item.orgId.organization,
             destination: item.place,
             price: item.price,
           }));
           setSavedProduct(data);
+          
         }
       } else {
         setSavedProduct([]);

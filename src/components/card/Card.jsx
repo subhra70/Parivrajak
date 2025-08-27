@@ -116,11 +116,6 @@ function Card({ type, product = {}, onDelete }) {
             >
               Delete
             </button>
-            {type !== "Purchased" && (
-              <button className="py-2 px-4 bg-orange-600 text-white hover:bg-orange-700 rounded-md w-full sm:w-auto">
-                Purchase
-              </button>
-            )}
           </div>
         </div>
       </div>
