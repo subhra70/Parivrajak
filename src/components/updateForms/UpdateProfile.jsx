@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { loadData } from "../../Store/destSlice";
+import { updateData } from "../../Store/orgInfoSlice";
 
 function UpdateProfile() {
   const {
@@ -15,14 +18,16 @@ function UpdateProfile() {
   } = useForm();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [disableSubmit,setDisableSubmit]=useState(false)
+  const [disableSubmit, setDisableSubmit] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.orgProfile.userInfo);
 
   // States for controlled inputs
-  const [name, setName] = useState("");
-  const [organization, setOrganization] = useState("");
-  const [phone, setPhone] = useState("");
-  const [loc, setLoc] = useState("");
+  const [name, setName] = useState(userInfo.name);
+  const [organization, setOrganization] = useState(userInfo.organization);
+  const [phone, setPhone] = useState(userInfo.mobile);
+  const [loc, setLoc] = useState(userInfo.location);
 
   useEffect(() => {
     const init = async () => {
@@ -40,25 +45,28 @@ function UpdateProfile() {
           return;
         }
 
-        const { data, status } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/organizer`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+        if (userInfo.name === "") {
+          const { data, status } = await axios.get(
+            `${import.meta.env.VITE_API_URL}/organizer`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (status === 200 && data) {
+            dispatch(loadData(data));
           }
-        );
-
-        if (status === 200 && data) {
-          setName(data.username);
-          setOrganization(data.organization);
-          setPhone(data.phone);
-          setLoc(data.location);
-
-          // Initialize react-hook-form values
-          setValue("name", data.username);
-          setValue("orgname", data.organization);
-          setValue("phone", data.phone);
-          setValue("loc", data.location);
         }
+
+        setName(userInfo.name);
+        setOrganization(userInfo.organization);
+        setPhone(userInfo.mobile);
+        setLoc(userInfo.location);
+
+        // Initialize react-hook-form values
+        setValue("name", name);
+        setValue("orgname", organization);
+        setValue("phone", phone);
+        setValue("loc", loc);
       } catch (err) {
         console.log(err);
         await authService.logoutUser();
@@ -71,7 +79,7 @@ function UpdateProfile() {
 
   const update = async ({ name, orgname, phone, loc }) => {
     setErrorMessage("");
-    setDisableSubmit(true)
+    setDisableSubmit(true);
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -98,17 +106,18 @@ function UpdateProfile() {
       );
       if (updatedAccount.status === 200) {
         setError(false);
-        setDisableSubmit(false)
-        reset()
+        setDisableSubmit(false);
+        dispatch(updateData({name,organization,phone,loc}))
+        reset();
         setErrorMessage("Updation Successful");
-        navigate("/dashboard")
+        navigate("/dashboard");
       } else {
-        setDisableSubmit(false)
+        setDisableSubmit(false);
         setError(true);
         setErrorMessage("Updation Unsuccessful");
       }
     } catch (error) {
-      setDisableSubmit(false)
+      setDisableSubmit(false);
       console.log(error);
       setError(true);
       setErrorMessage("Update unsuccessful");
@@ -237,7 +246,7 @@ function UpdateProfile() {
             className="bg-orange-500 text-white font-semibold px-3 py-3 rounded-md hover:bg-orange-600 transition"
             disabled={disableSubmit}
           >
-            {disableSubmit?"Saving...":"Save Changes"}
+            {disableSubmit ? "Saving..." : "Save Changes"}
           </button>
           <Link to={"/dashboard"}>
             <button

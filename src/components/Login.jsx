@@ -3,14 +3,11 @@ import { FcGoogle } from "react-icons/fc";
 import AuthService from "../authentication/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { login as authLogin } from "../Store/authSlice";
 
 function Login() {
   const [message, setMessage] = useState("");
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [disableSubmit, setDisableSubmit] = useState(false);
 
@@ -36,7 +33,6 @@ function Login() {
         setDisableSubmit(false);
         const userData = localStorage.getItem("username");
         if (userData != "") {
-          dispatch(authLogin(userData));
           navigate("/");
         }
       } else {

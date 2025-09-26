@@ -4,7 +4,9 @@ import PostHistoryCard from "../card/PostHistoryCard";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import authService from "../../authentication/auth";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { loadData } from "../../Store/orgInfoSlice";
 
 function HistoryTab({ postHistory, setPostHistory, handleDelete }) {
   useEffect(() => {
@@ -148,11 +150,12 @@ function Dashboard() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [loc, setLoc] = useState("");
-  const [image, setImage] = useState("");
   const [postHistory, setPostHistory] = useState([]);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [orgId, setOrgId] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.orgProfile.userInfo);
 
   useEffect(() => {
     const init = async () => {
@@ -168,21 +171,29 @@ function Dashboard() {
           await authService.logoutUser();
           navigate("/orglogin");
         }
-
-        const { data, status } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/organizer`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+        if (userInfo.name === "") {
+          const { data, status } = await axios.get(
+            `${import.meta.env.VITE_API_URL}/organizer`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (status === 200 && data) {
+            dispatch(loadData(data));
+            setName(data.username);
+            setOrganization(data.organization);
+            setPhone(data.phone);
+            setEmail(data.email);
+            setLoc(data.location);
+            setOrgId(data.id);
           }
-        );
-
-        if (status === 200 && data) {
-          setName(data.username);
-          setOrganization(data.organization);
-          setPhone(data.phone);
-          setEmail(data.email);
-          setLoc(data.location);
-          setOrgId(data.id);
+        } else {
+          setName(userInfo.name);
+          setOrganization(userInfo.organization);
+          setPhone(userInfo.mobile);
+          setEmail(userInfo.email);
+          setLoc(userInfo.location);
+          setOrgId(userInfo.id);
         }
       } catch (err) {
         console.error(err);
