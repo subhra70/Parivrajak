@@ -106,9 +106,6 @@ function Home() {
                   Purchase Your Storage
                 </button>
               </Link>
-              <button className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition" onClick={()=>alert("Organizer Account Creation is temporarily stopped")}>
-                  Purchase Your Storage
-                </button>
             </div>
 
             {/* Image Section */}
