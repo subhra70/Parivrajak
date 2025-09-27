@@ -101,11 +101,11 @@ function Home() {
               <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-700">
                 From Purchase to Posting — Start Your Journey as an Organizer!
               </span>
-              {/* <Link to={"/dashboard"}>
+              <Link to={"/dashboard"}>
                 <button className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition">
                   Purchase Your Storage
                 </button>
-              </Link> */}
+              </Link>
               <button className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition" onClick={()=>alert("Organizer Account Creation is temporarily stopped")}>
                   Purchase Your Storage
                 </button>
